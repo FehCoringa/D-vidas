@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Minhas Dívidas</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#0f0f13;color:#e8e4dc;font-family:Georgia,serif;min-height:100vh;padding-bottom:90px}
+.header{background:#1a1a24;border-bottom:1px solid #2a2a3a;padding:48px 20px 20px}
+.header h1{font-size:24px;font-weight:700}
+.header p{color:#7a7a8a;font-size:13px;margin-top:4px}
+.content{max-width:640px;margin:0 auto;padding:20px 16px 0}
+.resumo{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:20px}
+.card-r{background:#1a1a24;border-radius:12px;padding:12px 10px}
+.card-r .lb{font-size:10px;color:#7a7a8a;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.card-r .vl{font-size:13px;font-weight:700}
+.filtros{display:flex;gap:8px;overflow-x:auto;margin-bottom:20px;padding-bottom:4px;scrollbar-width:none}
+.filtros::-webkit-scrollbar{display:none}
+.fbtn{background:#1a1a24;color:#9a9aaa;border:1px solid #2a2a3a;border-radius:20px;padding:6px 14px;font-size:12px;cursor:pointer;white-space:nowrap;font-family:Georgia,serif}
+.fbtn.on{background:#f97316;color:#fff;border-color:#f97316}
+.vazio{text-align:center;padding:60px 24px;background:#1a1a24;border-radius:16px;border:1px dashed #2a2a3a}
+.vazio .ic{font-size:40px;margin-bottom:12px}
+.vazio p{color:#7a7a8a;font-size:14px}
+.vazio small{color:#5a5a6a;font-size:12px}
+.lista{display:flex;flex-direction:column;gap:12px}
+.dcard{background:#1a1a24;border-radius:14px;border:1px solid #2a2a3a;overflow:hidden}
+.dbody{padding:16px}
+.tag{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;display:inline-block;margin-bottom:6px}
+.dtopo{display:flex;justify-content:space-between;align-items:flex-start}
+.dnome{font-size:17px;font-weight:700}
+.dobs{font-size:12px;color:#7a7a8a;margin-top:2px}
+.dvalor{font-size:17px;font-weight:700;text-align:right}
+.dparc{font-size:11px;color:#7a7a8a}
+.pbar{background:#2a2a3a;border-radius:4px;height:6px;margin-top:10px;overflow:hidden}
+.pfill{height:100%;border-radius:4px}
+.pinfo{display:flex;justify-content:space-between;margin-top:4px;font-size:11px;color:#7a7a8a}
+.dvenc{font-size:12px;color:#7a7a8a;margin-top:8px}
+.dacoes{border-top:1px solid #2a2a3a;display:flex}
+.abtn{flex:1;padding:10px 0;background:none;border:none;font-size:12px;cursor:pointer;font-family:Georgia,serif}
+.abtn+.abtn{border-left:1px solid #2a2a3a}
+.fab{position:fixed;bottom:28px;right:24px;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none;border-radius:50%;width:58px;height:58px;font-size:30px;cursor:pointer;box-shadow:0 4px 20px #f9731644;display:flex;align-items:center;justify-content:center;z-index:50}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.overlay.on{display:flex}
+.sheet{background:#1a1a24;width:100%;max-width:640px;border-radius:20px 20px 0 0;padding:24px 20px 48px;border:1px solid #2a2a3a;max-height:88vh;overflow-y:auto}
+.stit{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.stit h2{font-size:18px}
+.xbtn{background:none;border:none;color:#9a9aaa;font-size:24px;cursor:pointer}
+.campo{margin-bottom:14px}
+.campo label{font-size:12px;color:#9a9aaa;display:block;margin-bottom:5px}
+.campo input,.campo select{width:100%;background:#111118;border:1px solid #2a2a3a;border-radius:8px;padding:11px 12px;color:#e8e4dc;font-size:16px;font-family:Georgia,serif;outline:none;-webkit-appearance:none}
+.bsalvar{width:100%;padding:14px;border-radius:10px;background:linear-gradient(135deg,#f97316,#ea580c);color:#fff;border:none;font-size:16px;font-weight:700;cursor:pointer;font-family:Georgia,serif;margin-top:4px}
+.oconf{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.oconf.on{display:flex}
+.cbox{background:#1a1a24;border-radius:16px;padding:24px;max-width:320px;width:100%;text-align:center;border:1px solid #ef444444}
+.cbtns{display:flex;gap:10px;margin-top:20px}
+.bcancl{flex:1;padding:10px;background:#2a2a3a;border:none;border-radius:8px;color:#e8e4dc;cursor:pointer;font-family:Georgia,serif;font-size:14px}
+.bdel{flex:1;padding:10px;background:#ef4444;border:none;border-radius:8px;color:#fff;font-weight:700;cursor:pointer;font-family:Georgia,serif;font-size:14px}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>💳 Minhas Dívidas</h1>
+  <p>Organize tudo que você deve em um só lugar</p>
+</div>
+<div class="content">
+  <div class="resumo">
+    <div class="card-r" style="border:1px solid #ef444422"><div class="lb">Total devido</div><div class="vl" id="tot" style="color:#ef4444">R$ 0,00</div></div>
+    <div class="card-r" style="border:1px solid #10b98122"><div class="lb">Já paguei</div><div class="vl" id="pago" style="color:#10b981">R$ 0,00</div></div>
+    <div class="card-r" style="border:1px solid #f9731622"><div class="lb">Falta pagar</div><div class="vl" id="rest" style="color:#f97316">R$ 0,00</div></div>
+  </div>
+  <div class="filtros" id="filtros"></div>
+  <div id="lista"></div>
+</div>
+<button class="fab" onclick="abrirNovo()">+</button>
+<div class="overlay" id="ov-form" onclick="fecharModal()">
+  <div class="sheet" onclick="event.stopPropagation()">
+    <div class="stit"><h2 id="mtit">Nova dívida</h2><button class="xbtn" onclick="fecharModal()">×</button></div>
+    <div class="campo"><label>Para quem você deve *</label><input id="f-credor" type="text" placeholder="Ex: Nubank, João..."></div>
+    <div class="campo"><label>Valor total (R$) *</label><input id="f-valor" type="number" inputmode="decimal" placeholder="0.00"></div>
+    <div class="campo"><label>Categoria</label><select id="f-cat"><option>Cartão</option><option>Empréstimo</option><option>Aluguel</option><option>Serviços</option><option>Pessoa física</option><option>Outro</option></select></div>
+    <div class="campo"><label>Nº de parcelas</label><input id="f-parc" type="number" inputmode="numeric" placeholder="1"></div>
+    <div class="campo"><label>Parcelas já pagas</label><input id="f-pagas" type="number" inputmode="numeric" placeholder="0"></div>
+    <div class="campo"><label>Data de vencimento</label><input id="f-venc" type="date"></div>
+    <div class="campo"><label>Observação</label><input id="f-obs" type="text" placeholder="Opcional..."></div>
+    <button class="bsalvar" id="bsalvar" onclick="salvar()">Adicionar dívida</button>
+  </div>
+</div>
+<div class="oconf" id="ov-conf">
+  <div class="cbox">
+    <div style="font-size:32px;margin-bottom:12px">⚠️</div>
+    <div style="font-size:16px;font-weight:700;margin-bottom:8px">Excluir dívida?</div>
+    <div style="font-size:13px;color:#9a9aaa">Essa ação não pode ser desfeita.</div>
+    <div class="cbtns"><button class="bcancl" onclick="fecharConf()">Cancelar</button><button class="bdel" onclick="confirmarDel()">Excluir</button></div>
+  </div>
+</div>
+<script>
+const CATS=["Todas","Cartão","Empréstimo","Aluguel","Serviços","Pessoa física","Outro"];
+const COR={"Cartão":"#f97316","Empréstimo":"#ef4444","Aluguel":"#8b5cf6","Serviços":"#3b82f6","Pessoa física":"#10b981","Outro":"#6b7280"};
+let dividas=JSON.parse(localStorage.getItem("dividas-felipe")||"[]");
+let filtro="Todas",editId=null,delId=null;
+function salvar(){
+  const credor=document.getElementById("f-credor").value.trim();
+  const valor=parseFloat(document.getElementById("f-valor").value);
+  if(!credor||!valor){alert("Preencha o credor e o valor!");return;}
+  const d={id:editId||Date.now(),credor,valor,categoria:document.getElementById("f-cat").value,parcelas:Math.max(1,parseInt(document.getElementById("f-parc").value)||1),pagas:Math.max(0,parseInt(document.getElementById("f-pagas").value)||0),vencimento:document.getElementById("f-venc").value,obs:document.getElementById("f-obs").value.trim()};
+  if(editId)dividas=dividas.map(x=>x.id===editId?d:x);else dividas.push(d);
+  persist();fecharModal();render();
+}
+function marcar(id){dividas=dividas.map(d=>d.id===id?{...d,pagas:Math.min(d.pagas+1,d.parcelas)}:d);persist();render()}
+function abrirEditar(id){
+  const d=dividas.find(x=>x.id===id);editId=id;
+  document.getElementById("f-credor").value=d.credor;
+  document.getElementById("f-valor").value=d.valor;
+  document.getElementById("f-cat").value=d.categoria;
+  document.getElementById("f-parc").value=d.parcelas;
+  document.getElementById("f-pagas").value=d.pagas;
+  document.getElementById("f-venc").value=d.vencimento||"";
+  document.getElementById("f-obs").value=d.obs||"";
+  document.getElementById("mtit").textContent="Editar dívida";
+  document.getElementById("bsalvar").textContent="Salvar alterações";
+  document.getElementById("ov-form").classList.add("on");
+}
+function abrirNovo(){
+  editId=null;
+  ["f-credor","f-valor","f-parc","f-pagas","f-venc","f-obs"].forEach(id=>document.getElementById(id).value="");
+  document.getElementById("f-cat").value="Cartão";
+  document.getElementById("mtit").textContent="Nova dívida";
+  document.getElementById("bsalvar").textContent="Adicionar dívida";
+  document.getElementById("ov-form").classList.add("on");
+}
+function fecharModal(){document.getElementById("ov-form").classList.remove("on")}
+function abrirConf(id){delId=id;document.getElementById("ov-conf").classList.add("on")}
+function fecharConf(){delId=null;document.getElementById("ov-conf").classList.remove("on")}
+function confirmarDel(){dividas=dividas.filter(d=>d.id!==delId);persist();fecharConf();render()}
+function persist(){localStorage.setItem("dividas-felipe",JSON.stringify(dividas))}
+function brl(v){return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function render(){
+  const tot=dividas.reduce((s,d)=>s+d.valor,0);
+  const pg=dividas.reduce((s,d)=>s+(d.valor/d.parcelas)*d.pagas,0);
+  document.getElementById("tot").textContent=brl(tot);
+  document.getElementById("pago").textContent=brl(pg);
+  document.getElementById("rest").textContent=brl(tot-pg);
+  const fc=document.getElementById("filtros");fc.innerHTML="";
+  CATS.forEach(cat=>{const b=document.createElement("button");b.className="fbtn"+(filtro===cat?" on":"");b.textContent=cat;b.onclick=()=>{filtro=cat;render()};fc.appendChild(b)});
+  const lista=filtro==="Todas"?dividas:dividas.filter(d=>d.categoria===filtro);
+  const lc=document.getElementById("lista");
+  if(!lista.length){lc.innerHTML=`<div class="vazio"><div class="ic">📋</div><p>Nenhuma dívida ainda</p><small>Toque no + para adicionar</small></div>`;return;}
+  lc.innerHTML=`<div class="lista">${lista.map(d=>{
+    const pct=Math.round((d.pagas/d.parcelas)*100);
+    const cor=COR[d.categoria]||"#6b7280";
+    const venc=d.vencimento?new Date(d.vencimento+"T12:00:00").toLocaleDateString("pt-BR"):"";
+    const prog=d.parcelas>1?`<div class="pbar"><div class="pfill" style="width:${pct}%;background:${pct===100?"#10b981":"#f97316"}"></div></div><div class="pinfo"><span>${pct}% pago</span>${d.parcelas-d.pagas>0?`<span>Falta: ${brl((d.valor/d.parcelas)*(d.parcelas-d.pagas))}</span>`:""}</div>`:"";
+    const mb=d.parcelas>1&&d.pagas<d.parcelas?`<button class="abtn" style="color:#10b981" onclick="marcar(${d.id})">✓ Parcela paga</button>`:"";
+    return`<div class="dcard"><div class="dbody"><div><span class="tag" style="background:${cor}22;color:${cor}">${d.categoria}</span>${pct===100?' <span style="font-size:12px">✅ Quitada</span>':""}</div><div class="dtopo"><div><div class="dnome">${d.credor}</div>${d.obs?`<div class="dobs">${d.obs}</div>`:""}</div><div><div class="dvalor" style="color:${pct===100?"#10b981":"#ef4444"}">${brl(d.valor)}</div>${d.parcelas>1?`<div class="dparc">${d.pagas}/${d.parcelas} parc.</div>`:""}</div></div>${prog}${venc?`<div class="dvenc">📅 Vence: ${venc}</div>`:""}</div><div class="dacoes">${mb}<button class="abtn" style="color:#9a9aaa" onclick="abrirEditar(${d.id})">✏️ Editar</button><button class="abtn" style="color:#ef4444" onclick="abrirConf(${d.id})">🗑 Excluir</button></div></div>`;
+  }).join("")}</div>`;
+}
+render();
+</script>
+</body>
+</html>
